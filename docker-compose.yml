@@ -1,0 +1,39 @@
+# Phiên bản Build Image
+
+version: "3.7"
+
+# Các loại services 
+
+services: 
+    frontend :
+        build : 
+            context : ./frontend
+            dockerfile : Dockerfile
+        ports : 
+            - "3000:3000"
+        depends_on : 
+            - backend
+
+    backend :
+        build :
+            context: ./backend/backend
+            dockerfile : Dockerfile
+        ports: 
+            - "8080:5000"
+        enviroment :
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ConnectionStrings__DefaultConnection=Server=db;Database=Cinema_DB;User Id=sa;Password=1;TrustServerCertificate=true
+        depends_on :
+            - db
+    db: 
+        image: mcr.microsoft.com/mssql/server:latest
+        ports:
+            - "1433:1433"
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD : 1
+        volumes:
+            - db_data:/var/opt/mssql/data
+volumes:
+    db_data:
+
